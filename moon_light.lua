@@ -6,6 +6,18 @@ function Clamp(number,min,max)
     return math.min(math.max(number, min), max)
 end
 
+-- Changes a table of strings so that table.string can be used instead of numbers
+function enum(tbl)
+    local length = #tbl
+    for i = 1, length do
+        local v = tbl[i]
+        tbl[v] = i
+    end
+    
+    return tbl
+
+end
+
 -- Find middle point between two positions
 function Mid_point(A_X,A_Y,B_X,B_Y)
     return {((A_X + B_X) / 2), ((A_Y + B_Y) / 2)}
