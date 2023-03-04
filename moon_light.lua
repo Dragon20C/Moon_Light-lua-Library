@@ -40,7 +40,7 @@ function math.Is_even(number)
 end
 
 -- Linear Interpolation function
-function math.Lerp(start_v,end_v,percent)
+function math.lerp(start_v,end_v,percent)
     return start_v + (end_v - start_v) * percent
 end
 
@@ -92,5 +92,73 @@ function Check_os()
     end
     BinaryFormat = nil
 end
+
+-- Converts inputs into intergers
+function Input_axis(key)
+    if love.keyboard.isDown(key) then
+      return 1
+    end
+    return 0
+  end
+
+-- Gets a position outside a rectangle
+function GetPositionOutsideRect(x, y, width, height)
+    -- Calculate half the width and height of the rectangle
+    local halfWidth = width / 2
+    local halfHeight = height / 2
+    
+    -- Calculate a random angle in degrees
+    local angle = math.rad(love.math.random(360))
+    
+    -- Calculate the x and y components of a vector with length equal to the diagonal of the rectangle
+    local diagonalLength = math.sqrt(halfWidth ^ 2 + halfHeight ^ 2)
+    local vecX = diagonalLength * math.cos(angle)
+    local vecY = diagonalLength * math.sin(angle)
+    
+    -- Calculate the x and y positions outside the rectangle
+    local posX = x + vecX
+    local posY = y + vecY
+    
+    -- Return the result as a table with x and y values
+    return {x = posX, y = posY}
+  end
+
+-- Finds the distance between two points, note both args are tables
+function Get_Distance(objA, objB)
+    -- Get the length for each of the components x and y
+    local xDist = objB.x - objA.x
+    local yDist = objB.y - objA.y
+
+    return math.sqrt( (xDist ^ 2) + (yDist ^ 2) )
+end
+
+-- This function first finds the angle between two points which are tables with x,y positions and a offset value which offsets it from pointA
+function Angle_offset(pointA, pointB, offsetDistance)
+    local dx = pointB.x - pointA.x
+    local dy = pointB.y - pointA.y
+    
+    local angle = math.atan2(dy, dx)
+    
+    local offsetX = offsetDistance * math.cos(angle)
+    local offsetY = offsetDistance * math.sin(angle)
+    
+    local offsetPoint = { x = pointA.x + offsetX, y = pointA.y + offsetY }
+    
+    return offsetPoint
+  end
+
+-- Finds the closets targets that are in a table and returns the x and y position of it.
+function Find_target(Center_position,group_targets,max_distance)
+    local dist_val = max_distance or 500
+    local lowest = {x = 0, y = 0}
+    for _, target in ipairs(group_targets) do
+      
+      if Get_Distance(Center_position,target) < dist_val then
+        dist_val = Get_Distance(Center_position,target)
+        lowest.x, lowest.y = target.x,target.y
+      end
+    end
+    return {x = lowest.x,y = lowest.y}
+  end
 
 return moon_light
